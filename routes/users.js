@@ -6,8 +6,8 @@ const { check, validationResult } = require("express-validator");
 
 const config = require("config");
 const auth = require("../middleware/auth");
-const User = require("../modals/User");
-const Profile = require("../modals/Profile");
+const User = require("../models/User");
+const Profile = require("../models/Profile");
 // const Rating = require("../../models/Ratings");
 // const Chats = require("../../models/Chat");
 // const JobMessages = require("../../models/JobMessages");

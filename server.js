@@ -6,6 +6,7 @@ var bodyParser = require("body-parser");
 const PORT = process.env.PORT || 5000;
 
 const User = require("./routes/users");
+const Profile = require("./routes/profiles");
 // const Profile = require("./routes/api/profiles");
 // const Category = require("./routes/api/categories");
 // const Password = require("./routes/api/password");
@@ -36,17 +37,10 @@ app.use(express.json({ extended: false }));
 
 //user connection
 
-let final = [
-  {"a" : ["a" , "b" , "c" , "d"] },
-  {"e" : ["e" , "f" , "g" , "h"] },
-  {"i" : ["i" , "j" , "k" , "l" , "m" , "n"] },
-  {"o" : ["o" , "p" , "q" , "r" ,"s" , "t"] },
-  {"u" : ["u" , "v" , "w" , "x" , "y" , "z"] }
-   ]
-console.log(final[4].u[5]);
-console.log(final[0].a[0]); 
+
 //api routes here
 app.use("/api/users", User);
+app.use("/api/profiles", Profile);
 // 
 
 

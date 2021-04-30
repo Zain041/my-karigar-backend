@@ -7,7 +7,7 @@ const cloudinary = require("cloudinary").v2;
 const { v4: uuidv4 } = require('uuid');
 const { check, validationResult } = require("express-validator");
 // const addNotification = require("./notificationFunc");
-
+// C:\Program Files\MongoDB\Server\3.4\bin
 const auth = require("../middleware/auth");
 const Profile = require("../models/Profile");
 const User = require("../models/User");
@@ -117,7 +117,7 @@ async (req, res) => {
 
  
    try {
-       let profiles = await Profile.find()
+       let profiles = await Profile.find({role:"provider"})
        
        return res.json({ profiles });
    }

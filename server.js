@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 5000;
 
 const User = require("./routes/users");
 const Profile = require("./routes/profiles");
+const Services = require("./routes/services")
 // const Profile = require("./routes/api/profiles");
 // const Category = require("./routes/api/categories");
 // const Password = require("./routes/api/password");
@@ -41,6 +42,7 @@ app.use(express.json({ extended: false }));
 //api routes here
 app.use("/api/users", User);
 app.use("/api/profiles", Profile);
+app.use("/api/services", Services);
 // 
 
 

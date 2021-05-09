@@ -8,20 +8,14 @@ const PORT = process.env.PORT || 5000;
 const User = require("./routes/users");
 const Profile = require("./routes/profiles");
 const Services = require("./routes/services")
-// const Profile = require("./routes/api/profiles");
-// const Category = require("./routes/api/categories");
-// const Password = require("./routes/api/password");
-// const Search = require("./routes/api/search");
-// const JobRequests = require("./routes/api/jobRequests");
-// const JobMessages = require("./routes/api/jobMessages");
-// const Chats = require("./routes/api/Chat");
-// const ShopMessages = require("./routes/api/shopMessages");
-// const Notifications = require("./routes/api/notifications");
-// const Products = require("./routes/api/products");
-// const Favourites = require("./routes/api/favourites");
-// const NewJobs = require("./routes/api/newJobs");
-// app.use(bodyParser.json());
-// app.use(express.static("public"));
+const Appointment = require("./routes/appointments")
+const Notifications = require("./routes/notifications");
+const Password = require("./routes/password");
+const Search = require("./routes/search");
+const JobRequests = require("./routes/jobRequests");
+const Chats = require("./routes/Chat");
+
+
 app.use(
   bodyParser.urlencoded({
     extended: true,
@@ -43,6 +37,12 @@ app.use(express.json({ extended: false }));
 app.use("/api/users", User);
 app.use("/api/profiles", Profile);
 app.use("/api/services", Services);
+app.use("/api/appointments", Appointment);
+app.use("/api/notifications", Notifications);
+app.use("/api/chats", Chats);
+// app.use("/api/password", Password);
+app.use("/api/search", Search);
+app.use("/api/jobRequests", JobRequests);
 // 
 
 

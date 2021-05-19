@@ -97,7 +97,7 @@ router.post("/getAllMessages", auth, async (req, res) => {
     if (!chat)
       return res.status(400).json({ err: [{ msg: "Messages not found." }] });
     for (msg in chat) {
-      let profile1 = await Profile.findOne({ user: chat[msg].sender })
+      let profile1 = await Profile.findOne({ user: chat[msg].sender}) 
         .select("avatar")
         .select("fullName");
       let profile2 = await Profile.findOne({ user: chat[msg].receiver })
@@ -119,7 +119,7 @@ router.post("/getAllMessages", auth, async (req, res) => {
     console.error(err.message);
     res.status(500).send("Server Error");
   }
-});
+}); 
 
 // @route   POST api/chats/getUserMessages
 // @desc    Get User Messages

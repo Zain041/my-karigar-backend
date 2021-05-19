@@ -126,6 +126,35 @@ async (req, res) => {
        res.status(500).send('Server Error')
    }
 });
+
+router.post('/searchProviders',
+    
+async (req, res) => {
+  
+console.log(req.body)
+ 
+   try {
+    let profiles
+      if(req.body.city!=null && req.body.category!=null){
+        profiles = await Profile.find({role:"provider",status:"accepted",city:req.body.city,category:req.body.category})
+      } else  if(req.body.city==null && req.body.category!=null){
+        profiles = await Profile.find({role:"provider",status:"accepted",category:req.body.category})
+      } else  if(req.body.city!=null){
+        profiles = await Profile.find({role:"provider",status:"accepted",city:req.body.city})
+      }
+      else  if(req.body.category!=null){
+        profiles = await Profile.find({role:"provider",status:"accepted"})
+      }
+
+      console.log(profiles)
+       return res.json(profiles );
+     
+   }
+   catch (err) {
+       console.error(err.message);
+       res.status(500).send('Server Error')
+   }
+});
 // update profile by Admin-----------------------------------------------
 router.put("/UpdateProfile", async (req, res) => {
 
@@ -133,9 +162,30 @@ router.put("/UpdateProfile", async (req, res) => {
   try {
  
 
-    const profile = await Profile.findByIdAndUpdate(req.body.user_id,{
-      roleId:req.body.categoryId
+    const profile = await Profile.findOneAndUpdate({user:req.body.user_id},{
+      status:req.body.status
     },{ new: true })
+
+    res.send(profile)
+    
+
+    
+  } catch (error) {
+    
+    return res.status(404).send(error.message)
+  }
+
+  
+
+}
+)
+router.post("/deleteProfile", async (req, res) => {
+
+ 
+  try {
+ 
+
+    const profile = await Profile.findOneAndDelete({user:req.body.user_id})
 
     res.send(profile)
     

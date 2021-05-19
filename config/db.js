@@ -6,7 +6,7 @@ const cloudDb= config.get('mongoCloud')
 const connectDB = async () => {
     // 'mongodb://localhost:27017/mvac-backend'
     try {
-        await mongoose.connect(cloudDb, {
+        await mongoose.connect(db, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true,

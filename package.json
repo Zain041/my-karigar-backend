@@ -7,6 +7,11 @@
     "start": "node server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  
+    "engines" : { 
+      "node" : "10.23.0" 
+    },
+
   "author": "M.Zain",
   "license": "ISC",
   "dependencies": {

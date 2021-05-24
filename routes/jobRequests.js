@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const cors = require('cors')
-const jwt = require('jsonwebtoken')
+
 const { check, validationResult } = require('express-validator');
 
 const config = require('config')
@@ -11,7 +11,7 @@ const Jobs = require('../models/Jobs')
 const Profile = require('../models/Profile')
 
 const addNotification = require('./notificationFunc');
-const { findOne } = require('../models/Profile');
+
 
 router.use(cors())
 

@@ -4,40 +4,37 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 const NewJobsSchema = new Schema({
-  userId: {
+  buyerId: {
     type: Schema.Types.ObjectId,
     ref: "users",
     default: null,
   },
-  jobPostImage: {
+  title: {
     type: String,
     default: null,
   },
-  jobTitle: {
+  description: {
     type: String,
     default: null,
   },
-  jobDescription: {
+  category: {
     type: String,
     default: null,
   },
-  jobSkills: {
-    type: String,
+  budget: {
+    type:Number,
     default: null,
   },
 
-  jobLocation: {
+  city: {
     type: String,
     default: null,
   },
-  experienceRequired: {
-    type: String,
-    default: null,
-  },
-  salary: {
+  numOfDays: {
     type: Number,
     default: null,
   },
+  
   jobStatus: {
     type: String,
     default: null,

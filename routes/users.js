@@ -8,10 +8,7 @@ const config = require("config");
 const auth = require("../middleware/auth");
 const User = require("../models/User");
 const Profile = require("../models/Profile");
-// const Rating = require("../../models/Ratings");
-// const Chats = require("../../models/Chat");
-// const JobMessages = require("../../models/JobMessages");
-// const ShopMessages = require("../../models/ShopMessages");
+
 router.use(cors());
 
 // @route   POST api/users/register
@@ -202,4 +199,31 @@ router.post("/logout", auth, async (req, res) => {
   }
 });
 
+
+
+
+router.post("/customer", async (req, res) => {
+  
+  try{ 
+    const customer = new Customer(req.body);
+   
+    const data = await customer.save();
+    const user={
+      fullName:data.first_name+" "+data.last_name,
+      phoneNumber:data.body.phone,
+      email:data.email
+    }
+    const profile= new Profile(user)
+      const profileData=await profile.save()
+      console.log(profileData)
+      const token = await customer.generateAuthToken();
+      res.status(201).send({ data, token,profileData });
+    } catch (error) {
+      res.status(401).send({
+        error: true,
+        message: error.message,
+        code: error.code,
+      });
+    }
+  });
 module.exports = router;

@@ -66,6 +66,11 @@ const ProfilesSchema = new Schema({
     type: String,
     default: null,
   },
+  averageRating: {
+    type: String,
+    default: null,
+  },
+  
   date: {
     type: Date,
     default: Date.now,

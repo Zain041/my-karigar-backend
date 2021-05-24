@@ -6,12 +6,12 @@ const path = require("path");
 const cloudinary = require("cloudinary").v2;
 const { v4: uuidv4 } = require('uuid');
 const { check, validationResult } = require("express-validator");
-// const addNotification = require("./notificationFunc");
+const addNotification = require("./notificationFunc");
 // C:\Program Files\MongoDB\Server\3.4\bin
 const auth = require("../middleware/auth");
 const Profile = require("../models/Profile");
 const User = require("../models/User");
-// const Rating = require("../models/Ratings");
+const Rating = require("../models/Ratings");
 
 router.use(cors());
 
@@ -120,6 +120,22 @@ async (req, res) => {
        let profiles = await Profile.find({role:"provider"})
        
        return res.json({ profiles });
+   }
+   catch (err) {
+       console.error(err.message);
+       res.status(500).send('Server Error')
+   }
+});
+router.get('/getCustomers',
+    
+async (req, res) => {
+  
+
+ 
+   try {
+       let profiles = await Profile.find({role:"customer"})
+       
+       return res.json( profiles );
    }
    catch (err) {
        console.error(err.message);
@@ -278,7 +294,7 @@ router.post("/getUserProfile", auth, async (req, res) => {
 // @desc    Post users profile image
 // @access  Private
 router.post("/uploadPhoto", auth, async (req, res) => {
-    upload(req, res, async (error) => {
+  upload(req, res, async (error) => {
     if (error) {
       let msg = null;
       if (error.message) msg = error.message;
@@ -290,9 +306,11 @@ router.post("/uploadPhoto", auth, async (req, res) => {
           .status(404)
           .json({ errors: [{ msg: "Image does not exist" }] });
       } else {
+        try {
 
           var image = null;
-        await cloudinary.uploader.upload(
+          const timestamp = new Date().getTime()
+        await cloudinary.uploader.upload( 
           req.file.path,
           {
             resource_type: "image",
@@ -301,7 +319,8 @@ router.post("/uploadPhoto", auth, async (req, res) => {
           },
           function (error, result) {
             image = result;
-          }
+          },
+         
         );
         const profileFields = {};
 
@@ -313,7 +332,7 @@ router.post("/uploadPhoto", auth, async (req, res) => {
         if (public_id) profileFields.public_id = avatar.public_id;
         console.log("avatar",profileFields.avatar);
         console.log("url",avatar.secure)
-        try {
+       
           var profile = await Profile.findOne({ user: req.user._id });
 
           if (profile) {
@@ -328,7 +347,7 @@ router.post("/uploadPhoto", auth, async (req, res) => {
             await profile.save();
             return res.status(200).json(profile);
           }
-        } catch (err) {
+        }catch (err) {
           console.log(err);
           return res
             .status(404)
@@ -341,6 +360,7 @@ router.post("/uploadPhoto", auth, async (req, res) => {
   
     )}
 );
+
 
    
         /**
@@ -512,7 +532,7 @@ router.post("/sendRating", auth, async (req, res) => {
   }
 
   var { rating, feedback, receiver } = req.body;
-  rating = parseFloat(rating);
+   rating = parseFloat(rating);
 
   try {
     let rate = new Rating({ sender: req.user._id, rating, feedback, receiver });

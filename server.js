@@ -13,7 +13,10 @@ const Notifications = require("./routes/notifications");
 const Password = require("./routes/password");
 const Search = require("./routes/search");
 const JobRequests = require("./routes/jobRequests");
-const Chats = require("./routes/Chat");
+const JobOffers = require("./routes/JobOffers");
+
+const NewJobs = require("./routes/newJobs")
+const cors =require('cors')
 
 
 app.use(
@@ -32,17 +35,19 @@ app.use(express.json({ extended: false }));
 
 //user connection
 
-
+app.use(cors())
 //api routes here
 app.use("/api/users", User);
 app.use("/api/profiles", Profile);
 app.use("/api/services", Services);
 app.use("/api/appointments", Appointment);
 app.use("/api/notifications", Notifications);
-app.use("/api/chats", Chats);
+
 // app.use("/api/password", Password);
 app.use("/api/search", Search);
 app.use("/api/jobRequests", JobRequests);
+app.use("/api/offers", JobOffers);
+app.use("/api/jobs", NewJobs)
 // 
 
 

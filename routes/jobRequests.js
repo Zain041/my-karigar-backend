@@ -39,7 +39,8 @@ router.post('/sendJobRequest',
             return res.status(400).json({ errors: errors.array() });
         }
 
-        const { sellerId, amount,coverLetter, jobDate } = req.body;
+        const { sellerId, amount,coverLetter, jobDate,jobTime,service } = req.body;
+        console.log(req.body)
 
         const buyerId = req.user._id
         try {
@@ -50,7 +51,7 @@ router.post('/sendJobRequest',
                 return res.status(400).json({ errors: [{ msg: 'Job request already sent.' }] });
             }
 
-            job = new JobsRequests({ buyerId, sellerId, amount, jobDate,coverLetter })
+            job = new JobsRequests({ buyerId, sellerId, amount, jobDate,coverLetter,jobTime,service })
             await job.save();
             let buyer = await Profile.findOne({ user: buyerId }).select('fullName')
             addNotification("Job Request", sellerId, buyer.fullName + " has sent you a job request");
@@ -146,6 +147,8 @@ router.post('/acceptJobRequest',
                     jobFields.sellerId = docs.sellerId;
                     jobFields.amount = docs.amount;
                     jobFields.jobDate = docs.jobDate;
+                    jobFields.jobTime=docs.jobTime,
+                    jobFields.service=docs.service
                     
                     
                        
@@ -223,24 +226,7 @@ router.post('/changeJobStatus',
             res.status(401).json({ errors: [{ msg: "job does not  exists" }] });
         }
         console.log(job)
-    //     let tempWallet
-    //     if(status==="completed"){ 
-    //     let wallet = await Wallet.findOne({providers_id:job.sellerId})
-
-    //     if(!wallet){
-    //         res.status(401).json({ errors: [{ msg: "wallet does not  exists" }] });
-    //     }
-       
-
-    //     let walletFields={}
-    //     walletFields.amount=wallet.amount+job.amount
-
-    //      tempWallet = await Wallet.findOneAndUpdate({_id:wallet._id},walletFields,{
-    //         new:true
-    //     })
-
-       
-    // }
+    
 
         try {
             await Jobs.findOneAndUpdate({ _id: _id }, { status: status }, { new: true })

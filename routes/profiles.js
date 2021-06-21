@@ -362,99 +362,10 @@ router.post("/uploadPhoto", auth, async (req, res) => {
 );
 
 
-   
-        /**
-         * Create new record in mongoDB
-         */
-        // var image = "uploads/images/" + req.file.filename;
-        // const profileFields = {};
-        // const avatar = image;
 
-        // profileFields.user = req.user._id;
-        // if (avatar) profileFields.avatar = avatar;
-        // try {
-        //   var profile = await Profile.findOne({ user: req.user._id });
-
-        //   if (profile) {
-        //     var profile = await Profile.findOneAndUpdate(
-        //       { user: req.user._id },
-        //       { $set: profileFields },
-        //       { new: true }
-        //     );
-        //     return res.json(profile);
-        //   } else {
-        //     profile = new Profile(profileFields);
-        //     await profile.save();
-        //     return res.status(200).json(profile);
-        //   }
-        // } catch (err) {
-        //   return res
-        //     .status(404)
-        //     .json({ errors: [{ msg: "Image could not be uploaded" }] });
-        // }
-      
-    
-  
-//-------------------------------------------Image Upload End Here---------------------------------------------
-
-// @route   POST api/profiles/getProfileImage
-// @desc    Get users profile image
-// @access  Private
-router.post("/getProfileImage", auth, async (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
-  }
-  try {
-    let image = await Profile.findOne(
-      { user: req.user._id },
-      function (err, docs) {
-        if (err) res.status(400).json({ err: [{ msg: "User not found" }] });
-      }
-    )
-      .select("-_id")
-      .select("-fullName")
-      .select("-phoneNumber")
-      .select("-profileVideo")
-      .select("-roleId")
-      .select("-address")
-      .select("-date");
-    return res.json({ image });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
-});
 
 //-------------------------------------------Video Upload Start Here---------------------------------------------
 
-const storageVideoEngine = multer.diskStorage({
-  destination: "./public/uploads/videos/",
-  filename: function (req, file, fn) {
-    fn(null, req.user._id + path.extname(file.originalname)); //+'-'+file.fieldname
-  },
-});
-//init
-const uploadVideo = multer({
-  storage: storageVideoEngine,
-  limits: { fileSize: 1073741824 },
-  fileFilter: function (req, file, callback) {
-    validateVideoFile(file, callback);
-  },
-}).single("profileVideo");
-var validateVideoFile = function (file, cb) {
-  allowedFileTypes = /mp4/;
-  const extension = allowedFileTypes.test(
-    path.extname(file.originalname).toLowerCase()
-  );
-  const mimeType = allowedFileTypes.test(file.mimetype);
-  if (extension && mimeType) {
-    return cb(null, true);
-  } else {
-    cb("Invalid file type. Only mp4 file is allowed.");
-  }
-};
 
 cloudinary.config({
   cloud_name: "mykarigar041",
@@ -462,64 +373,6 @@ cloudinary.config({
   api_secret: "PcnRph4xxsW7J0Z9G6AHNETK3ms",
 });
 
-// @route   POST api/profiles/uploadVideo
-// @desc    Post users profile image
-// @access  Private
-router.post("/uploadVideo", auth, async (req, res) => {
-  uploadVideo(req, res, async (error) => {
-    if (error) {
-      let msg = null;
-      if (error.message) msg = error.message;
-      else msg = error;
-      return res.status(400).json({ errors: [{ msg: msg }] });
-    } else {
-      if (req.file == undefined) {
-        return res
-          .status(404)
-          .json({ errors: [{ msg: "Video not attached" }] });
-      } else {
-        var video = null;
-        await cloudinary.uploader.upload(
-          req.file.path,
-          {
-            resource_type: "video",
-            public_id: "profileVideo/" + req.user._id,
-            chunk_size: 6000000,
-          },
-          function (error, result) {
-            video = result;
-          }
-        );
-        const profileFields = {};
-
-        profileFields.user = req.user._id;
-        if (video) profileFields.profileVideo = video.secure_url;
-        try {
-          var profile = await Profile.findOne({ user: req.user._id });
-
-          if (profile) {
-            var profile = await Profile.findOneAndUpdate(
-              { user: req.user._id },
-              { $set: profileFields },
-              { new: true }
-            );
-            return res.json(profile);
-          } else {
-            profile = new Profile(profileFields);
-            await profile.save();
-            return res.status(200).json(profile);
-          }
-        } catch (err) {
-          console.log(err);
-          return res
-            .status(404)
-            .json({ errors: [{ msg: "Video could not be uploaded" }] });
-        }
-      }
-    }
-  });
-});
-//-------------------------------------------Video Upload End Here-----------------------------------------------
 
 // @route   POST api/profiles/sendRating
 // @desc    Send ratings to other user
@@ -531,11 +384,11 @@ router.post("/sendRating", auth, async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  var { rating, feedback, receiver } = req.body;
+  var { rating, feedback, receiver,service } = req.body;
    rating = parseFloat(rating);
 
   try {
-    let rate = new Rating({ sender: req.user._id, rating, feedback, receiver });
+    let rate = new Rating({ sender: req.user._id, rating, feedback, receiver,service });
     await rate.save();
     let profile = await Profile.findOne({ user: req.user._id }).select(
       "fullName"
@@ -562,5 +415,35 @@ router.post("/sendRating", auth, async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+
+
+router.post('/getReviews', async (req, res) => {
+  const errors = validationResult(req);
+  console.log(req.body)
+
+  if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+  }
+  try {
+      let reviews = []
+      let ratings = await Rating.find({receiver:req.body._id})
+      if (!ratings) return res.status(400).json({ err: [{ msg: 'No job reviews.' }] })
+      for (job in ratings) {
+          let profile = await Profile.findOne({ user: ratings[job].sender }).select('avatar').select('fullName')
+          if (profile) {
+            reviews.push({ buyer: profile, rating: ratings[job] })
+          }
+          else {
+            reviews.push({ job: ratings[job] })
+          }
+      }
+      return res.json(reviews);
+  }
+  catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server Error')
+  }
+});
+
 
 module.exports = router;

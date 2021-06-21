@@ -10,7 +10,7 @@ const Profile = require("./routes/profiles");
 const Services = require("./routes/services")
 const Appointment = require("./routes/appointments")
 const Notifications = require("./routes/notifications");
-const Password = require("./routes/password");
+
 const Search = require("./routes/search");
 const JobRequests = require("./routes/jobRequests");
 const JobOffers = require("./routes/JobOffers");
@@ -43,7 +43,7 @@ app.use("/api/services", Services);
 app.use("/api/appointments", Appointment);
 app.use("/api/notifications", Notifications);
 
-// app.use("/api/password", Password);
+
 app.use("/api/search", Search);
 app.use("/api/jobRequests", JobRequests);
 app.use("/api/offers", JobOffers);

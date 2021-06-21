@@ -12,6 +12,10 @@ const RatingSchema = new Schema({
             type: String,
             default: null,
         },
+        service: {
+            type: String,
+            default: null,
+        },
         receiver: {
             type: Schema.Types.ObjectId,
             ref: 'users',

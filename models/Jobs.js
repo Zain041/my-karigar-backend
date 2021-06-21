@@ -20,6 +20,15 @@ const JobsSchema = new Schema({
     jobDate: {
         type: Date,
     },
+    jobTime:{
+        type:String,
+        default:null
+    },
+    service:{
+        type:String,
+        default:null
+    },
+    
     status: {
         type: String,
         required: true,
